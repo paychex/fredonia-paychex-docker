@@ -1,0 +1,79 @@
+
+version: '3'
+services:
+  myserver:
+    # Builds dockerfile
+    build: .
+    # Set container name
+    container_name: web4
+    networks:
+      - frontend
+      - backend
+      
+    # Will restart myserver unless stopped
+    restart: unless-stopped
+
+    # Volumes to allow real time change with out rebuilding
+    volumes:
+      - ./website:/var/www/html
+    
+    # Setting environmental variables
+    environment:
+      - MYSQL_HOST=mysql-app
+      - MYSQL_USER=kitten
+      - MYSQL_PASSWORD=fourFours4!
+      - MYSQL_DB=cats
+    
+    # Opens port and should be different than 80 to avoid conflicts
+    ports:
+      - 5001:80
+
+  db:
+    # Build dockerfile
+    build:
+      # Location of dockerfile to build
+      context: ./mysql
+      dockerfile: Dockerfile
+    networks:
+      - backend
+
+    # Container name
+    container_name: mysql4
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    
+    # Will restart db unless stopped
+    restart: unless-stopped
+    
+    # Setting environmental variables
+    environment:
+      - MYSQL_ROOT_PASSWORD=fourFours4!
+      - MYSQL_USER=kitten
+      - MYSQL_PASSWORD=fourFours4!
+      - MYSQL_DB=cats
+    
+    # Opening port for mysql database
+    ports:
+      - 6033:3306
+
+  phpadmin:
+    # Build phphmyadmin image
+    image: phpmyadmin/phpmyadmin:latest
+    # makes it dependent on the database
+    depends_on:
+      - db
+    networks:
+      - backend
+    # Open ports
+    ports: 
+      - 30002:80
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=db
+      - PMA_PORT=3306
+    container_name: myphpadmin
+
+networks:
+  frontend:
+  backend:
+    
+
