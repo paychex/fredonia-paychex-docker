@@ -5,7 +5,7 @@ services:
     # Builds dockerfile
     build: .
     # Set container name
-    container_name: web4
+    container_name: web5
     networks:
       - frontend
       - backend
@@ -38,7 +38,7 @@ services:
       - backend
 
     # Container name
-    container_name: mysql4
+    container_name: mysql5
     command: mysqld --default-authentication-plugin=mysql_native_password
     
     # Will restart db unless stopped
@@ -70,7 +70,7 @@ services:
     environment:
       - PMA_HOST=db
       - PMA_PORT=3306
-    container_name: myphpadmin
+    container_name: myphpadmin5
 
 networks:
   frontend:
